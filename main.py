@@ -62,7 +62,7 @@ if 'c_user' in response.cookies:
     except AttributeError:
         final_video_url = re.search('sd_src":"(.+?)"', api_call.text).groups()[0]
 
-    donwload_dir = os.path.join('/home/viet/Videos')
+    donwload_dir = os.path.join('.')
     final_video_url = final_video_url.replace('\\', '')
     print(final_video_url)
 
