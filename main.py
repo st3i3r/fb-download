@@ -50,7 +50,9 @@ if 'c_user' in response.cookies:
             '__spin_b': '',
             '__spin_t': '',
             }
-    final_url = 'https://www.facebook.com/video/tahoe/async/2024601894471573/?originalmediaid=2024601894471573&playerorigin=permalink&playersuborigin=tahoe&ispermalink=true&numcopyrightmatchedvideoplayedconsecutively=0&storyidentifier=UzpfSTEwMDAwNzY1MzQ2NDM1NzpWSzoyMDI0NjAxODk0NDcxNTcz&payloadtype=primary'
+
+    final_url = input("URL: ")
+
     api_call = session.post(final_url, data=data)
 
     try:
