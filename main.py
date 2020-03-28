@@ -3,9 +3,12 @@ import re
 import urllib.parse
 import wget
 import os
+import sys
 
 email = ""
 password = ""
+
+ERASE_LINE = '\x1b[2K'
 
 session = requests.session()
 session.headers.update({
@@ -29,12 +32,12 @@ if 'c_user' in response.cookies:
     user_id = response.cookies['c_user']
     print("Login successfully")
 
-    video_url = "https://www.facebook.com/elliotalderso/videos/vb.100007653464357/2024601894471573/?type=2&video_source=user_video_tab"
+    video_url = input("Video URL: ")
     video_id = re.search('videos/(.+?)/', video_url).group(1)
 
     video_page = session.get(video_url)
     identifier = re.search('ref=tahoe","(.+?)"', video_page.text).groups()[0]
-    final_url = "https://www.facebook.com/video/tahoe/async/{0}/?chain=true&isvideo=true&originalmediaid={0}&playerorigin=permalink&playersuborigin=tahoe&ispermalink=true&numcopyrightmatchedvideoplayedconsecutively=0&storyidentifier={1}&dpr=2".format(
+    final_url = "https://www.facebook.com/video/tahoe/async/{0}/?originalmediaid={0}&playerorigin=permalink&playersuborigin=tahoe&ispermalink=true&numcopyrightmatchedvideoplayedconsecutively=0&storyidentifier={1}&payloadtype=primary".format(
         video_id, identifier)
 
     data = {'__user': user_id,
@@ -51,21 +54,21 @@ if 'c_user' in response.cookies:
             '__spin_t': '',
             }
 
-    final_url = input("URL: ")
-
     api_call = session.post(final_url, data=data)
 
     try:
         final_video_url = re.search('hd_src":"(.+?)",', api_call.text).groups()[0]
+        print("Get HD URL")
     except AttributeError:
         final_video_url = re.search('sd_src":"(.+?)"', api_call.text).groups()[0]
+
+    donwload_dir = os.path.join('/home/viet/Videos')
+    final_video_url = final_video_url.replace('\\', '')
     print(final_video_url)
 
-    donwload_dir = os.path.join('.')
-    final_video_url = final_video_url.replace('\\', '')
-
     print("Downloading ...")
-    wget.download(final_video_url, dir)
+    wget.download(final_video_url, donwload_dir)
+    sys.stdout.write(ERASE_LINE)
 
 else:
     print("Login failed.")
